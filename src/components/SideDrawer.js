@@ -42,26 +42,6 @@ const SideDrawer = props => {
       <List component='nav'>
         <ListItem
           color='inherit'
-          to='/'
-          component={NavLink}
-          button
-          onClick={() => props.setDrawerOpen(false)}
-        >
-          <HomeIcon className={classes.menuButton} />
-          <Typography align='justify'>Home</Typography>
-        </ListItem>
-        <ListItem
-          color='inherit'
-          to='/dashboard'
-          component={NavLink}
-          button
-          onClick={() => props.setDrawerOpen(false)}
-        >
-          <DashboardIcon className={classes.menuButton} />
-          <Typography align='justify'>Dashboard</Typography>
-        </ListItem>
-        <ListItem
-          color='inherit'
           to='/group'
           component={NavLink}
           button
@@ -69,16 +49,6 @@ const SideDrawer = props => {
         >
           <GroupIcon className={classes.menuButton} />
           <Typography align='justify'>Groups</Typography>
-        </ListItem>
-        <ListItem
-          color='inherit'
-          to='/settings'
-          component={NavLink}
-          button
-          onClick={() => props.setDrawerOpen(false)}
-        >
-          <BuildIcon className={classes.menuButton} />
-          <Typography align='justify'>Settings</Typography>
         </ListItem>
       </List>
       <Divider />

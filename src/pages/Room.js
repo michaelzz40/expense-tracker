@@ -212,7 +212,7 @@ const Room = props => {
             ADD EXPENSE
           </Button>
         </Grid>
-        <Grid item xs={4} md={2}>
+        <Grid item xs={4} md={4}>
           <Button
             variant='contained'
             color='secondary'
