@@ -5,14 +5,17 @@ import {
   GROUP_SUCCESSFUL,
   GROUP_FAILED,
   GET_GROUP_BY_ID,
-  GROUP_RESET
+  GROUP_RESET,
+  GET_EXPENSE_DATA,
+  GROUP_DELETE
 } from "../actions/types";
 
 const initialState = {
   groups: [],
   groupLoading: false,
   groupFailedMessage: "",
-  group: []
+  group: [],
+  expenseData: []
 };
 
 export const groupsReducer = (state = initialState, action) => {
@@ -60,7 +63,22 @@ export const groupsReducer = (state = initialState, action) => {
         groups: [],
         groupLoading: false,
         groupFailedMessage: null,
-        group: []
+        group: [],
+        expenseData: []
+      };
+    }
+    case GROUP_DELETE: {
+      return {
+        ...state,
+        groups: [],
+        group: [],
+        expenseData: []
+      };
+    }
+    case GET_EXPENSE_DATA: {
+      return {
+        ...state,
+        expenseData: action.payload
       };
     }
 

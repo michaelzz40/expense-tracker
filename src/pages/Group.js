@@ -68,9 +68,6 @@ const Group = props => {
   useEffect(() => {
     if (groupFailedMessage) {
       setErrorOpen(true);
-      setTimeout(() => {
-        dispatch({ type: GROUP_RESET });
-      }, 6000);
     }
     if (!token) {
       props.history.push("/login");
@@ -78,7 +75,7 @@ const Group = props => {
     if (token) {
       dispatch(getAllGroups());
     }
-  }, [dispatch, groupFailedMessage, token]);
+  }, [dispatch, groupFailedMessage, token, props.history]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -159,14 +156,6 @@ const Group = props => {
             onClick={handleOpen}
           >
             Add new
-          </Button>
-          <Button
-            variant='contained'
-            startIcon={<RemoveIcon />}
-            color='secondary'
-            className={classes.button}
-          >
-            Remove Group
           </Button>
         </Grid>
       </Grid>

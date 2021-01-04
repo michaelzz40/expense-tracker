@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getGroupbyId, addNewMember, addExpense } from "../actions/groups";
+import {
+  getGroupbyId,
+  addNewMember,
+  addExpense,
+  getGroupExpenses,
+  removeGroup
+} from "../actions/groups";
 import { GROUP_RESET } from "../actions/types";
 import {
   Grid,
@@ -16,7 +22,10 @@ import {
   DialogTitle,
   TextareaAutosize,
   DialogActions,
-  DialogContent
+  DialogContent,
+  Popover,
+  IconButton,
+  Tooltip
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import axios from "axios";
@@ -25,11 +34,13 @@ import {
   GROUP_SUCCESSFUL,
   GROUP_FAILED
 } from "../actions/types";
+import DescriptionIcon from "@material-ui/icons/Description";
+import { push } from "react-router-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {
     margin: theme.spacing(5, 0),
-    padding: theme.spacing(4, 0)
+    padding: theme.spacing(4, 2)
   },
   memberList: {
     width: "100%",
@@ -46,6 +57,7 @@ const useStyles = makeStyles(theme => ({
     position: "relative",
     overflow: "auto",
     height: 500,
+    padding: theme.spacing(0, 2),
     maxHeight: 700
   },
   listSection: {
@@ -74,6 +86,23 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(0, 1),
       fontSize: 12
     }
+  },
+  popupContent: {
+    padding: theme.spacing(2)
+  },
+  removeButton: {
+    color: "red",
+    width: "100%",
+    maxWidth: 180,
+    padding: theme.spacing(2, 0),
+    fontSize: 14,
+    [theme.breakpoints.down("xs")]: {
+      width: 140,
+      height: 60,
+      maxWidth: 140,
+      padding: theme.spacing(0, 1),
+      fontSize: 12
+    }
   }
 }));
 
@@ -82,20 +111,42 @@ const Room = props => {
   const [expense, setExpense] = useState(0);
   const [description, setDescription] = useState("");
   const [openExpense, setOpenExpense] = useState(false);
+  const [currentUser, setCurrentUser] = useState(false);
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { group, groupFailedMessage } = useSelector(state => state.groups);
+  const { group, groupFailedMessage, expenseData, groupLoading } = useSelector(
+    state => state.groups
+  );
   const { token, email, userId } = useSelector(state => state.auth);
   const [member, setMember] = useState("");
   useEffect(() => {
+    if (group.length !== 0) {
+      return setCurrentUser(
+        group.length !== 0
+          ? group.find(g => g.userId === userId).isAdmin
+          : false
+      );
+    }
+    const fetchData = () => {
+      if (token) {
+        dispatch(getGroupExpenses(props.match.params.groupId));
+        dispatch(getGroupbyId(props.match.params.groupId));
+      }
+    };
+
     if (groupFailedMessage === "401") {
       dispatch({ type: GROUP_RESET });
       props.history.push("/group");
     }
-    if (token) {
-      dispatch(getGroupbyId(props.match.params.groupId));
-    }
-  }, [token, dispatch, groupFailedMessage]);
+    fetchData();
+  }, [
+    token,
+    groupFailedMessage,
+    userId,
+    group,
+    props.match.params.groupId,
+    dispatch
+  ]);
 
   const handleOpen = () => {
     setOpenMember(true);
@@ -110,6 +161,23 @@ const Room = props => {
     dispatch(addNewMember(member, props.match.params.groupId));
     setOpenMember(false);
   };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopupClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDelete = () => {
+    dispatch(removeGroup(props.match.params.groupId, props.history));
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   const generateReport = async () => {
     try {
@@ -229,7 +297,21 @@ const Room = props => {
             ADD EXPENSE
           </Button>
         </Grid>
-        <Grid container item xs={4} md={4} justify='flex-end'>
+
+        {currentUser && (
+          <Grid container item xs={4} md={2} justify='flex-end'>
+            <Button
+              variant='contained'
+              color='inherit'
+              className={classes.menuButton}
+              onClick={handleDelete}
+            >
+              REMOVE GROUP
+            </Button>
+          </Grid>
+        )}
+
+        <Grid container item xs={4} md={2} justify='flex-end'>
           <Button
             variant='contained'
             color='secondary'
@@ -239,6 +321,7 @@ const Room = props => {
             GENERATE REPORT
           </Button>
         </Grid>
+
         <Grid item xs={12} md={4}>
           <List className={classes.memberList} subheader={<li />}>
             <ListSubheader>Member List</ListSubheader>
@@ -258,8 +341,51 @@ const Room = props => {
               : null}
           </List>
         </Grid>
-        <Grid item xs={12} md={8}>
-          <Grid className={classes.description}></Grid>
+        <Grid container item xs={12} md={8}>
+          <Grid item className={classes.description}>
+            <List>
+              {expenseData
+                ? expenseData.map(data => {
+                    return (
+                      <ListItem key={data.transactionId}>
+                        <ListItemText
+                          secondary={` has donated the amount of
+                          ${data.amount}`}
+                        >
+                          <strong> {data.user.firstName}</strong>
+                        </ListItemText>
+                        <Tooltip title='Description'>
+                          <IconButton
+                            aria-describedby={id}
+                            onClick={handleClick}
+                          >
+                            <DescriptionIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Popover
+                          id={id}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handlePopupClose}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center"
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center"
+                          }}
+                        >
+                          <Typography className={classes.popupContent}>
+                            {data.description}
+                          </Typography>
+                        </Popover>
+                      </ListItem>
+                    );
+                  })
+                : null}
+            </List>
+          </Grid>
         </Grid>
       </Grid>
     </>

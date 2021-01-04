@@ -5,7 +5,8 @@ import {
   AUTH_SUCCESSFUL,
   AUTH_RESET,
   AUTH_ERROR,
-  ATTACH_TOKEN
+  ATTACH_TOKEN,
+  GROUP_RESET
 } from "./types";
 import axios from "axios";
 
@@ -47,6 +48,7 @@ export const registerUser = form => async dispatch => {
 
 export const authReset = () => dispatch => {
   dispatch({ type: AUTH_RESET });
+  dispatch({ type: GROUP_RESET });
 };
 
 export const attachToken = () => async dispatch => {

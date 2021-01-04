@@ -5,11 +5,15 @@ import {
   GROUP_LOADING,
   GROUP_SUCCESSFUL,
   GROUP_FAILED,
-  GET_GROUP_BY_ID
+  GET_GROUP_BY_ID,
+  GET_EXPENSE_DATA,
+  GROUP_DELETE,
+  GROUP_RESET
 } from "../actions/types";
 
 export const getAllGroups = () => async dispatch => {
   try {
+    dispatch({ type: GROUP_RESET });
     dispatch({ type: GROUP_LOADING });
     const response = await axios.get(
       "https://group-api-final.herokuapp.com/api/groups"
@@ -91,6 +95,40 @@ export const addExpense = (
     dispatch({
       type: GROUP_FAILED,
       payload: "Unable to add Expense"
+    });
+  }
+};
+
+export const getGroupExpenses = groupId => async dispatch => {
+  try {
+    dispatch({ type: GROUP_LOADING });
+    const response = await axios.get(
+      `https://group-api-final.herokuapp.com/api/groups/expenses/${groupId}`
+    );
+    dispatch({ type: GET_EXPENSE_DATA, payload: response.data });
+    dispatch({ type: GROUP_SUCCESSFUL });
+  } catch (error) {
+    dispatch({
+      type: GROUP_FAILED,
+      payload: "Unable to load Expense"
+    });
+  }
+};
+
+export const removeGroup = (groupId, history) => async dispatch => {
+  try {
+    dispatch({ type: GROUP_LOADING });
+    const response = await axios.delete(
+      `https://group-api-final.herokuapp.com/api/groups/${groupId}`
+    );
+
+    dispatch({ type: GROUP_DELETE });
+    dispatch({ type: GROUP_SUCCESSFUL });
+    history.push("/group");
+  } catch (error) {
+    dispatch({
+      type: GROUP_FAILED,
+      payload: "Unable to delete Expense"
     });
   }
 };
