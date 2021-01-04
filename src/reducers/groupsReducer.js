@@ -57,6 +57,7 @@ export const groupsReducer = (state = initialState, action) => {
     case GROUP_RESET: {
       return {
         ...state,
+        groups: [],
         groupLoading: false,
         groupFailedMessage: null,
         group: []

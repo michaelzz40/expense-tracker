@@ -51,7 +51,7 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         authLoading: false,
-        authMessage: action.payload
+        errorMessage: action.payload
       };
     case AUTH_RESET:
       return {

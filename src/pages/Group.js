@@ -23,6 +23,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import { GROUP_RESET } from "../actions/types";
 import { NavLink } from "react-router-dom";
 
 function Alert(props) {
@@ -67,6 +68,9 @@ const Group = props => {
   useEffect(() => {
     if (groupFailedMessage) {
       setErrorOpen(true);
+      setTimeout(() => {
+        dispatch({ type: GROUP_RESET });
+      }, 6000);
     }
     if (!token) {
       props.history.push("/login");

@@ -16,6 +16,14 @@ import { IconButton } from "@material-ui/core";
 import ArrowBackIosSharpIcon from "@material-ui/icons/ArrowBackIosSharp";
 import { logUser } from "../actions/userAuth";
 import { useDispatch, useSelector } from "react-redux";
+import { AUTH_RESET } from "../actions/types";
+
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+}
 
 const images = [
   "https://miro.medium.com/max/8000/1*JrHDbEdqGsVfnBYtxOitcw.jpeg",
@@ -60,18 +68,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 export default function Login(props) {
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { token } = useSelector(state => state.auth);
+  const { token, errorMessage } = useSelector(state => state.auth);
 
   useEffect(() => {
     if (token) {
       props.history.push("/group");
     }
-  }, [token]);
+    if (errorMessage) {
+      setOpen(true);
+    }
+  }, [token, errorMessage]);
 
   const submitForm = e => {
     e.preventDefault();
@@ -86,6 +98,26 @@ export default function Login(props) {
   return (
     <Grid container component='main' className={classes.root}>
       <CssBaseline />
+
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={() => {
+          dispatch({ type: AUTH_RESET });
+          setOpen(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            dispatch({ type: AUTH_RESET });
+            setOpen(false);
+          }}
+          severity='error'
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.arrow}>

@@ -7,8 +7,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import BuildIcon from "@material-ui/icons/Build";
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import { AUTH_RESET } from "../actions/types";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,6 +38,8 @@ const useStyles = makeStyles(theme => ({
 
 const SideDrawer = props => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { token, username } = useSelector(state => state.auth);
 
   const drawer = (
     <div className={classes.list}>
@@ -53,22 +57,39 @@ const SideDrawer = props => {
       </List>
       <Divider />
       <List component='nav'>
-        <ListItem
-          component={NavLink}
-          to='/login'
-          button
-          onClick={() => props.setDrawerOpen(false)}
-        >
-          Login
-        </ListItem>
-        <ListItem
-          component={NavLink}
-          to='/register'
-          button
-          onClick={() => props.setDrawerOpen(false)}
-        >
-          Register
-        </ListItem>
+        {token ? (
+          <>
+            <ListItem>{username}</ListItem>
+            <ListItem
+              button
+              onClick={() => {
+                dispatch({ type: AUTH_RESET });
+                props.setDrawerOpen(false);
+              }}
+            >
+              Logout
+            </ListItem>
+          </>
+        ) : (
+          <>
+            <ListItem
+              component={NavLink}
+              to='/login'
+              button
+              onClick={() => props.setDrawerOpen(false)}
+            >
+              Login
+            </ListItem>
+            <ListItem
+              component={NavLink}
+              to='/register'
+              button
+              onClick={() => props.setDrawerOpen(false)}
+            >
+              Register
+            </ListItem>
+          </>
+        )}
       </List>
     </div>
   );
