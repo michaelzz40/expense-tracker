@@ -21,16 +21,36 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   menuButton: {
-    margin: theme.spacing(0, 2)
+    margin: theme.spacing(0, 2),
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+      padding: theme.spacing(2, 2)
+    }
   },
   title: {
-    flexGrow: 1
+    flexGrow: 1,
+    [theme.breakpoints.down("xs")]: {
+      display: "none"
+    }
   },
   list: {
     width: 250
   },
   fullList: {
     width: "auto"
+  },
+  hamburger: {
+    margin: theme.spacing(0, 2)
+  },
+  toggle: {
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: "auto"
+    }
+  },
+  username: {
+    [theme.breakpoints.down("xs")]: {
+      display: "none"
+    }
   }
 }));
 
@@ -77,9 +97,9 @@ const Navbar = () => {
       <Toolbar>
         <IconButton
           edge='start'
-          className={classes.menuButton}
           color='inherit'
           aria-label='menu'
+          className={classes.hamburger}
           onClick={() => setDrawerOpen(true)}
         >
           <MenuIcon />
@@ -91,6 +111,7 @@ const Navbar = () => {
           </Link>
         </Typography>
         <FormControlLabel
+          className={classes.toggle}
           control={
             <ToggleSwitch
               checked={mode}
@@ -101,7 +122,7 @@ const Navbar = () => {
         />
         {token ? (
           <>
-            <Typography>{username}</Typography>
+            <Typography className={classes.username}>{username}</Typography>
             <Button
               color='primary'
               variant='contained'
@@ -122,7 +143,12 @@ const Navbar = () => {
               <PersonIcon className={classes.menuButton} />
               Login
             </Button>
-            <Button color='inherit' component={NavLink} to='/register'>
+            <Button
+              color='inherit'
+              component={NavLink}
+              to='/register'
+              className={classes.menuButton}
+            >
               Register
             </Button>
           </>

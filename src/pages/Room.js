@@ -28,12 +28,12 @@ import {
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: theme.spacing(4, 0),
-    padding: theme.spacing(2, 0)
+    margin: theme.spacing(5, 0),
+    padding: theme.spacing(4, 0)
   },
   memberList: {
     width: "100%",
-    maxWidth: 360,
+    maxWidth: 500,
     backgroundColor: theme.palette.background.paper,
     position: "relative",
     overflow: "auto",
@@ -42,7 +42,6 @@ const useStyles = makeStyles(theme => ({
   },
   description: {
     width: "100%",
-    maxWidth: 640,
     backgroundColor: theme.palette.background.paper,
     position: "relative",
     overflow: "auto",
@@ -62,6 +61,19 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     width: "50%"
+  },
+  menuButton: {
+    width: "100%",
+    maxWidth: 180,
+    padding: theme.spacing(2, 0),
+    fontSize: 14,
+    [theme.breakpoints.down("xs")]: {
+      width: 140,
+      height: 60,
+      maxWidth: 140,
+      padding: theme.spacing(0, 1),
+      fontSize: 12
+    }
   }
 }));
 
@@ -198,25 +210,31 @@ const Room = props => {
         </Grid>
       </Dialog>
       <Grid container spacing={2} className={classes.root}>
-        <Grid item xs={4} md={2}>
-          <Button variant='outlined' onClick={handleOpen}>
+        <Grid container item xs={4} md={2}>
+          <Button
+            variant='outlined'
+            onClick={handleOpen}
+            className={classes.menuButton}
+          >
             ADD NEW MEMBER
           </Button>
         </Grid>
-        <Grid item xs={4} md={6}>
+        <Grid container item xs={4} md={6}>
           <Button
             variant='contained'
             color='primary'
             onClick={() => setOpenExpense(true)}
+            className={classes.menuButton}
           >
             ADD EXPENSE
           </Button>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid container item xs={4} md={4} justify='flex-end'>
           <Button
             variant='contained'
             color='secondary'
             onClick={generateReport}
+            className={classes.menuButton}
           >
             GENERATE REPORT
           </Button>
