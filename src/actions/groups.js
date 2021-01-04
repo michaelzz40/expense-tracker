@@ -16,7 +16,7 @@ export const getAllGroups = () => async dispatch => {
     dispatch({ type: GROUP_RESET });
     dispatch({ type: GROUP_LOADING });
     const response = await axios.get(
-      "https://group-api-final.herokuapp.com/api/groups"
+      "https://group-api-test.herokuapp.com/api/groups"
     );
     dispatch({ type: GET_ALL_GROUPS, payload: response.data });
     dispatch({ type: GROUP_SUCCESSFUL });
@@ -32,7 +32,7 @@ export const createGroup = companyName => async dispatch => {
   try {
     dispatch({ type: GROUP_LOADING });
     const response = await axios.post(
-      "https://group-api-final.herokuapp.com/api/groups",
+      "https://group-api-test.herokuapp.com/api/groups",
       company,
       {
         "Content-Type": "application/json"
@@ -50,7 +50,7 @@ export const getGroupbyId = id => async dispatch => {
   try {
     dispatch({ type: GROUP_LOADING });
     const response = await axios.get(
-      `https://group-api-final.herokuapp.com/api/groups/${id}`
+      `https://group-api-test.herokuapp.com/api/groups/${id}`
     );
     dispatch({ type: GET_GROUP_BY_ID, payload: response.data });
     dispatch({ type: GROUP_SUCCESSFUL });
@@ -103,7 +103,7 @@ export const getGroupExpenses = groupId => async dispatch => {
   try {
     dispatch({ type: GROUP_LOADING });
     const response = await axios.get(
-      `https://group-api-final.herokuapp.com/api/groups/expenses/${groupId}`
+      `https://group-api-test.herokuapp.com/api/groups/expenses/${groupId}`
     );
     dispatch({ type: GET_EXPENSE_DATA, payload: response.data });
     dispatch({ type: GROUP_SUCCESSFUL });
@@ -119,7 +119,7 @@ export const removeGroup = (groupId, history) => async dispatch => {
   try {
     dispatch({ type: GROUP_LOADING });
     const response = await axios.delete(
-      `https://group-api-final.herokuapp.com/api/groups/${groupId}`
+      `https://group-api-test.herokuapp.com/api/groups/${groupId}`
     );
 
     dispatch({ type: GROUP_DELETE });
